@@ -28,14 +28,13 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class SubscriptionServiceTest {
 
+    private Clock clock;
     @Mock
     private SubscriptionDao subscriptionDao;
     @Mock
     private CreateSubscriptionMapper createSubscriptionMapper;
     @Mock
     private CreateSubscriptionValidator createSubscriptionValidator;
-    @Mock
-    private Clock clock;
     @InjectMocks
     private SubscriptionService subscriptionService;
 

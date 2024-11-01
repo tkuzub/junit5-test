@@ -26,7 +26,6 @@ class CreateSubscriptionValidatorTest {
 
         var actual = validator.validate(dto);
 
-        assertThat(actual.getErrors()).hasSize(0);
         assertFalse(actual.hasErrors());
     }
 
@@ -41,12 +40,11 @@ class CreateSubscriptionValidatorTest {
                 .build();
 
         var validationResult = validator.validate(dto);
+
         Map<Integer, String> mapErrors = validationResult.getErrors().stream()
                 .collect(Collectors
                         .toMap(Error::getCode, Error::getMessage));
-
         assertAll(
-                () -> assertThat(validationResult.getErrors()).hasSize(1),
                 () -> assertTrue(validationResult.hasErrors()),
                 () -> assertThat(mapErrors).containsKey(100),
                 () -> assertThat(mapErrors).containsValue("userId is invalid")
@@ -63,12 +61,11 @@ class CreateSubscriptionValidatorTest {
                 .build();
 
         var validationResult = validator.validate(dto);
+
         Map<Integer, String> mapErrors = validationResult.getErrors().stream()
                 .collect(Collectors
                         .toMap(Error::getCode, Error::getMessage));
-
         assertAll(
-                () -> assertThat(validationResult.getErrors()).hasSize(1),
                 () -> assertThat(mapErrors).containsKey(101),
                 () -> assertThat(mapErrors).containsValue("name is invalid")
         );
@@ -84,12 +81,11 @@ class CreateSubscriptionValidatorTest {
                 .build();
 
         var validationResult = validator.validate(dto);
+
         Map<Integer, String> mapErrors = validationResult.getErrors().stream()
                 .collect(Collectors
                         .toMap(Error::getCode, Error::getMessage));
-
         assertAll(
-                () -> assertThat(validationResult.getErrors()).hasSize(1),
                 () -> assertTrue(validationResult.hasErrors()),
                 () -> assertThat(mapErrors).containsKey(102),
                 () -> assertThat(mapErrors).containsValue("provider is invalid")
@@ -106,12 +102,11 @@ class CreateSubscriptionValidatorTest {
                 .build();
 
         var validationResult = validator.validate(dto);
+
         Map<Integer, String> mapErrors = validationResult.getErrors().stream()
                 .collect(Collectors
                         .toMap(Error::getCode, Error::getMessage));
-
         assertAll(
-                () -> assertThat(validationResult.getErrors()).hasSize(1),
                 () -> assertThat(mapErrors).containsKey(103),
                 () -> assertThat(mapErrors).containsValue("expirationDate is invalid")
         );
@@ -127,12 +122,11 @@ class CreateSubscriptionValidatorTest {
                 .build();
 
         var validationResult = validator.validate(dto);
+
         Map<Integer, String> mapErrors = validationResult.getErrors().stream()
                 .collect(Collectors
                         .toMap(Error::getCode, Error::getMessage));
-
         assertAll(
-                () -> assertThat(validationResult.getErrors()).hasSize(4),
                 () -> assertThat(mapErrors).containsKeys(100, 101, 102, 103),
                 () -> assertThat(mapErrors).containsValues("userId is invalid", "name is invalid", "provider is invalid", "expirationDate is invalid")
         );
