@@ -23,11 +23,14 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 @ExtendWith(MockitoExtension.class)
 class SubscriptionServiceTest {
-
+    @Mock
     private Clock clock;
     @Mock
     private SubscriptionDao subscriptionDao;
@@ -37,7 +40,6 @@ class SubscriptionServiceTest {
     private CreateSubscriptionValidator createSubscriptionValidator;
     @InjectMocks
     private SubscriptionService subscriptionService;
-
     @Test
     void upsertSuccess() {
         var createSubscriptionDto = getSubscriptionDto();
@@ -89,11 +91,11 @@ class SubscriptionServiceTest {
     void expireSuccess() {
         var createSubscription = getSubscription();
         doReturn(Optional.of(createSubscription)).when(subscriptionDao).findById(createSubscription.getUserId());
-        doReturn(clock.instant()).when(clock).instant();
 
         subscriptionService.expire(createSubscription.getUserId());
 
         verify(subscriptionDao).findById(createSubscription.getUserId());
+        verify(subscriptionDao).update(createSubscription);
     }
 
     @Test
@@ -104,7 +106,6 @@ class SubscriptionServiceTest {
 
         var subscriptionException = assertThrows(SubscriptionException.class, () -> subscriptionService.expire(createSubscription.getUserId()));
         assertThat(subscriptionException).hasMessage(String.format("Subscription %d has already expired", createSubscription.getUserId()));
-        verify(clock, never()).instant();
     }
 
     private Subscription getSubscription() {

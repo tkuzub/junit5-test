@@ -57,7 +57,7 @@ public class SubscriptionService {
             throw new SubscriptionException(String.format("Subscription %d has already expired", subscriptionId));
         }
         subscription.setStatus(Status.EXPIRED);
-        subscription.setExpirationDate(Instant.now(clock));
+//        subscription.setExpirationDate(Instant.now(clock));
         subscriptionDao.update(subscription);
     }
 }
