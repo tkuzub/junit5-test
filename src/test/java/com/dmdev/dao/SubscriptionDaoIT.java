@@ -11,7 +11,10 @@ import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 class SubscriptionDaoIT extends IntegrationTestBase {
 
@@ -71,9 +74,10 @@ class SubscriptionDaoIT extends IntegrationTestBase {
         subscription.setProvider(Provider.APPLE);
 
         subscriptionDao.update(subscription);
-        Optional<Subscription> subscriptionId = subscriptionDao.findById(subscription.getId());
 
-        subscriptionId.ifPresent(actualResult -> assertThat(actualResult).isEqualTo(subscription));
+        var actualResult = subscriptionDao.findById(subscription.getId());
+        assertThat(actualResult).isPresent();
+        assertThat(actualResult.get()).isEqualTo(subscription);
     }
 
     @Test
@@ -84,8 +88,8 @@ class SubscriptionDaoIT extends IntegrationTestBase {
         subscription.setProvider(Provider.APPLE);
 
         subscriptionDao.update(subscription);
-        Optional<Subscription> subscriptionId = subscriptionDao.findById(getRandomUserId());
 
+        Optional<Subscription> subscriptionId = subscriptionDao.findById(getRandomUserId());
         assertTrue(subscriptionId.isEmpty());
     }
 
@@ -103,15 +107,18 @@ class SubscriptionDaoIT extends IntegrationTestBase {
     void findByUserId() {
         var subscription = getSubscription(getRandomUserId());
         subscriptionDao.insert(subscription);
-        var possibleSubscription = subscriptionDao.findByUserId(subscription.getUserId()).stream().findFirst();
 
-        possibleSubscription.ifPresent(actualResult -> assertThat(subscription.getUserId()).isEqualTo(actualResult.getUserId()));
+        var actualResult = subscriptionDao.findByUserId(subscription.getUserId()).stream().findFirst();
+
+        assertThat(actualResult).isPresent();
+        assertThat(actualResult.get()).isEqualTo(subscription);
     }
 
     @Test
     void shouldNotFindByUserIdIfUserIdDoesNotExist() {
         var subscription = getSubscription(getRandomUserId());
         subscriptionDao.insert(subscription);
+
         var possibleSubscription = subscriptionDao.findByUserId(getRandomUserId()).stream().findFirst();
 
         assertTrue(possibleSubscription.isEmpty());
